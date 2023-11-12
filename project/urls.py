@@ -22,7 +22,7 @@ from supplychain.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home.as_view() , name='home' )
+    path('', home, name='home' )
 ]
 
 
