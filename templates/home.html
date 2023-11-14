@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-12">
+            <h4 class="text-center">Available Products</h4>
+        </div>
+    </div>
+
+    <!-- Product ordering section -->
+
+    <div class="row mt-2 mb-3">
+        {% for product in products %}
+        <div class="col-md-3 mb-4">
+            <div class="card shadow bg-white">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 150px; object-fit:contain;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">Stock : {{ product.stock }}</p>
+                    <form action="{% url 'place_order' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{product.id}}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <input type="number" class="form-control" name="quantity" min="1" max="{{ product.stock }}" value="1" style="width: 70px;">
+                            <button type="submit" class="btn btn-primary order-btn">Order</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="card shadow bg-white">
+        <div class="card-header">
+            <h5>Order History</h5>
+        </div>
+        <div class="card-body">
+            <table class="table grid">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>quantity</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <th>{{ forloop.counter }}</th>
+                        <td>{{ order.product.name }}</td>
+                        <td>{{ order.quantity }}</td>
+                        <td>{{ order.order_date|date:"Y-m-d H:i" }}</td>
+                        <td>{{ order.status }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No Order found</td>
+                    </tr>
+                    {% endfor %}
+
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+    <div class="card shadow bg-white mt-4">
+        <div class="card-header">
+            <h5>Latest Ethereum Blocks</h5>
+        </div>
+        <div class="card-body">
+            <table class="table grid">
+                <thead>
+                    <tr>
+                        <th>Block</th>
+                        <th>Hash</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Value (Wei)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tx in transactions %}
+                    <tr>
+                        <td>{{ tx.blockNumber }}</td>
+                        <td class="truncate" title="{{ tx.hash }}">{{ tx.hash|slice:":10" }}...</td>
+                        <td class="truncate" title="{{ tx.from }}">{{ tx.from|slice:":10" }}...</td>
+                        <td class="truncate" title="{{ tx.to }}">{{ tx.to|slice:":10" }}...</td>
+                        <td>{{ tx.value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+{% endblock content %}

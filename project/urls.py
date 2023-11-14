@@ -18,11 +18,12 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from supplychain.views import home
+from supplychain.views import home, place_order
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home, name='home' )
+    path('', home, name='home' ),
+    path('place_order/', place_order, name='place_order'),
 ]
 
 
